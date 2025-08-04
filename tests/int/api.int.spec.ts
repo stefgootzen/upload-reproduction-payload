@@ -9,6 +9,7 @@ let payload: Payload
 
 const filepathPng = path.resolve(__dirname, './placeholder.png')
 const filepathJpg = path.resolve(__dirname, './placeholder.jpeg')
+const filepathSvg = path.resolve(__dirname, './placeholder.svg')
 
 describe('Local upload', () => {
   beforeAll(async () => {
@@ -48,7 +49,6 @@ describe('Local upload', () => {
     expect(media).toBeDefined()
   })
 
-
   it('with filePath works (jpg)', async () => {
     const media = await payload.create({
       collection: 'media',
@@ -80,4 +80,37 @@ describe('Local upload', () => {
 
     expect(media).toBeDefined()
   })
+
+  it('with filePath works (svg)', async () => {
+    const media = await payload.create({
+      collection: 'media',
+      filePath: filepathSvg,
+      data: {
+        alt: 'alt',
+      },
+    })
+
+    expect(media).toBeDefined()
+  })
+
+  it('with filebuffer works (svg)', async () => {
+    const fileBuffer = fs.readFileSync(filepathJpg)
+    const stats = fs.statSync(filepathSvg)
+
+    const media = await payload.create({
+      collection: 'media',
+      file: {
+        data: fileBuffer,
+        size: stats.size,
+        name: "random.svg",
+        mimetype: 'image/svg+xml',
+      },
+      data: {
+        alt: 'alt',
+      },
+    })
+
+    expect(media).toBeDefined()
+  })
 })
+
